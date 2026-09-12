@@ -1,86 +1,45 @@
-# 🚀 REST API Testing Portfolio — Postman
+# REST API Testing with Postman
 
-This project demonstrates practical **REST API testing skills** using **Postman** and the **JSONPlaceholder** public REST API.
+This repository contains a small REST API testing project I created while practicing API testing in Postman.
 
-The project includes positive and negative API test scenarios, automated assertions, environment variables, dynamic data handling, and collection execution.
+I used the JSONPlaceholder API to work with different HTTP methods, validate responses and create automated checks in Postman.
 
----
+## API
 
-## 🎯 Project Objective
-
-The goal of this project was to practice and demonstrate REST API testing from a **Junior QA Tester** perspective.
-
-The tests focus on validating:
-
-- HTTP methods
-- HTTP status codes
-- JSON response bodies
-- Response structure
-- Response headers
-- Response time
-- Positive and negative scenarios
-- Dynamic variables
-- API request and response data
-
----
-
-## 🛠 Tools & Technologies
-
-- Postman
-- REST API
-- JSON
-- JavaScript
-- JSONPlaceholder API
-- GitHub
-
----
-
-## 🔗 API Under Test
-
-**JSONPlaceholder**
-
-JSONPlaceholder is a free fake REST API used for testing and prototyping.
-
-Base URL:
+The project uses the public JSONPlaceholder REST API:
 
 `https://jsonplaceholder.typicode.com`
 
-> JSONPlaceholder simulates POST, PUT, PATCH and DELETE operations. Changes are not permanently persisted on the server.
+JSONPlaceholder is a test API, so POST, PUT, PATCH and DELETE requests are simulated and changes are not permanently saved on the server.
 
----
+## What I tested
 
-## 📋 API Requests
+The collection contains the following requests:
 
-The Postman collection contains the following requests:
-
-| Method | Request | Purpose |
+| Method | Request | What is checked |
 |---|---|---|
-| GET | Get all users | Retrieve and validate the list of users |
-| GET | Get user by ID | Retrieve a specific user using a dynamic ID |
-| GET | Get non-existing user | Verify handling of a non-existing resource |
-| POST | Create new post | Validate creation of a new resource |
-| PUT | Update post | Validate full resource update |
-| PATCH | Update post title | Validate partial resource update |
-| DELETE | Delete post | Validate resource deletion |
+| GET | Get all users | Status code, response structure, required user fields |
+| GET | Get user by ID | User data and ID |
+| GET | Get non-existing user | 404 response and empty response body |
+| POST | Create new post | Resource creation and returned data |
+| PUT | Update post | Full update of an existing resource |
+| PATCH | Update post title | Partial update of a resource |
+| DELETE | Delete post | Successful delete response |
 
----
+## Postman tests
 
-## 🧪 Automated Tests
+I added Postman scripts to check the API responses automatically. They cover:
 
-Postman scripts were used to automatically validate API responses.
+- HTTP status codes
+- JSON response structure
+- required fields
+- response data
+- Content-Type header
+- response time
+- empty response body
+- dynamic values
 
-The tests include:
-
-- HTTP status code validation
-- JSON response validation
-- Required field validation
-- Response data validation
-- Response time validation
-- Content-Type header validation
-- Empty response validation
-- Dynamic ID validation
-
-Example assertion:
+Example:
 
 ```javascript
 pm.test("Status code is 200", function () {
@@ -88,65 +47,7 @@ pm.test("Status code is 200", function () {
 });
 ```
 
----
-
-## 🔄 Environment Variables
-
-A Postman environment was created to avoid hardcoding configuration values.
-
-Example:
-
-```text
-baseUrl = https://jsonplaceholder.typicode.com
-```
-
-Requests use the environment variable:
-
-```text
-{{baseUrl}}/users
-```
-
-A dynamic `userId` variable is also created from an API response and reused in another request.
-
-Example flow:
-
-```text
-GET all users
-      ↓
-Save userId
-      ↓
-GET user by {{userId}}
-```
-
-Example script used to save the variable:
-
-```javascript
-const users = pm.response.json();
-
-pm.environment.set("userId", users[0].id);
-```
-
----
-
-## ❌ Negative Testing
-
-The collection includes a negative test for requesting a non-existing user.
-
-Request:
-
-```text
-GET {{baseUrl}}/users/999
-```
-
-Expected result:
-
-```text
-HTTP 404 Not Found
-```
-
-The response body is also validated to confirm that an empty JSON object is returned.
-
-Example assertion:
+For a non-existing user I check both the `404` status and the returned response body:
 
 ```javascript
 pm.test("Status code is 404", function () {
@@ -161,71 +62,75 @@ pm.test("Response body is empty object", function () {
 });
 ```
 
----
+## Variables
 
-## ▶️ Collection Runner
+Instead of hardcoding the API address in every request, I created a Postman environment with a `baseUrl` variable:
 
-The complete collection was executed using the **Postman Collection Runner**.
+```text
+baseUrl = https://jsonplaceholder.typicode.com
+```
 
-The Collection Runner allows all API requests and automated assertions to be executed as a complete test suite.
+Requests can then use URLs such as:
 
-### Test Execution Evidence
+```text
+{{baseUrl}}/users
+```
+
+I also wanted to practice passing data between requests. The first GET request saves a user ID from the response:
+
+```javascript
+const users = pm.response.json();
+pm.environment.set("userId", users[0].id);
+```
+
+The saved value is then used in another request:
+
+```text
+{{baseUrl}}/users/{{userId}}
+```
+
+## Test execution
+
+I ran the complete collection using Postman Collection Runner to check all requests and assertions together.
 
 ![Postman Collection Run](./screenshots/Postman_Collection_Run.png)
 
----
-
-## 📁 Repository Structure
+## Repository contents
 
 ```text
 api-testing-postman-portfolio/
-│
 ├── README.md
-│
 ├── postman/
 │   ├── REST_API_Testing_Portfolio.postman_collection.json
 │   └── JSONPlaceholder_Environment.postman_environment.json
-│
 └── screenshots/
     └── Postman_Collection_Run.png
 ```
 
----
+## How to run
 
-## 📥 How to Run the Tests
+1. Clone or download this repository.
+2. Import the collection from the `postman` folder into Postman.
+3. Import `JSONPlaceholder_Environment.postman_environment.json`.
+4. Select the `JSONPlaceholder Environment`.
+5. Run individual requests or use Collection Runner to execute the whole collection.
 
-1. Download or clone this repository.
-2. Open Postman.
-3. Import `REST_API_Testing_Portfolio.postman_collection.json`.
-4. Import `JSONPlaceholder_Environment.postman_environment.json`.
-5. Select `JSONPlaceholder Environment`.
-6. Run individual API requests or execute the complete collection using Collection Runner.
+## Tools used
 
----
+- Postman
+- REST API
+- JSON
+- JavaScript (basic Postman test scripts)
+- Git / GitHub
 
-## 💡 Skills Demonstrated
+## What I learned
 
-This project demonstrates practical knowledge of:
+This project helped me better understand how REST APIs work in practice, especially the differences between GET, POST, PUT, PATCH and DELETE requests.
 
-- REST API testing
-- GET, POST, PUT, PATCH and DELETE methods
-- HTTP status codes
-- JSON request and response validation
-- Postman automated assertions
-- Positive and negative API testing
-- Environment variables
-- Dynamic variables
-- Response headers validation
-- Response time validation
-- Collection Runner
-- Basic JavaScript assertions
-- GitHub project documentation
+I also practiced checking status codes and JSON responses, writing basic automated assertions in Postman, using environment variables and passing values between requests.
 
 ---
 
-## 👤 Author
-
-**Paweł Iwaszko**
-
-Junior Manual QA Tester  
-ISTQB® Certified Tester Foundation Level
+**Paweł Iwaszko**  
+ISTQB® Certified Tester Foundation Level  
+Junior Manual QA Tester
